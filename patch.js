@@ -48,9 +48,15 @@ patchFiles.forEach(file => {
             let changed = false;
 
             // --- A. Package Name Replacement ---
+            // Sadece tam paket eşleşmelerini veya paketle başlayan alt yolları değiştirir.
+            // Örneğin "proton.android.auth" içindeki "android.auth" kısmını yanlışlıkla değiştirmemesi için.
             if (content.includes(config.oldPackage)) {
-                content = content.split(config.oldPackage).join(config.newPackage);
-                changed = true;
+                // Regex: oldPackage'ı bulur, ancak önünde bir harf veya rakam olmamalıdır (kelime başı veya . sonrası)
+                const packageRegex = new RegExp('(?<![a-zA-Z0-9])' + config.oldPackage.replace(/\./g, '\\.'), 'g');
+                if (packageRegex.test(content)) {
+                    content = content.replace(packageRegex, config.newPackage);
+                    changed = true;
+                }
             }
 
             // --- B. App Title Replacement (Targeting strings.xml) ---

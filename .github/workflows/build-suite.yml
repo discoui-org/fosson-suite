@@ -95,6 +95,8 @@ jobs:
             -Pandroid.enableR8.fullMode=true \
             --no-daemon --parallel
         env:
+          CI_SERVER_HOST: gitlab.com
+          CI_PROJECT_PATH: proton/mobile/android/proton-libs
           MYAPP_RELEASE_STORE_FILE: release.jks
           MYAPP_RELEASE_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           MYAPP_RELEASE_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}

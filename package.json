@@ -18,7 +18,8 @@
     "build": "node build.js",
     "clone": "node clone.js",
     "update": "node update.js",
-    "patch": "node patch.js"
+    "patch": "node patch.js",
+    "reset": "for dir in apps/*; do if [ -d \"$dir\" ]; then (cd \"$dir\" && git reset --hard && git clean -fd); fi; done"
   },
   "dependencies": {
     "execa": "^9.6.1"
