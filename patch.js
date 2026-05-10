@@ -51,8 +51,9 @@ patchFiles.forEach(file => {
             // Sadece tam paket eşleşmelerini veya paketle başlayan alt yolları değiştirir.
             // Örneğin "proton.android.auth" içindeki "android.auth" kısmını yanlışlıkla değiştirmemesi için.
             if (content.includes(config.oldPackage)) {
-                // Regex: oldPackage'ı bulur, ancak önünde bir harf veya rakam olmamalıdır (kelime başı veya . sonrası)
-                const packageRegex = new RegExp('(?<![a-zA-Z0-9])' + config.oldPackage.replace(/\./g, '\\.'), 'g');
+                // Regex: isteğe bağlı olarak başındaki "me." kısmını da yakalar 
+                // ve tüm bloğu newPackage ile değiştirir.
+                const packageRegex = new RegExp('(?<![a-zA-Z0-9])(me\\.)?' + config.oldPackage.replace(/\./g, '\\.'), 'g');
                 if (packageRegex.test(content)) {
                     content = content.replace(packageRegex, config.newPackage);
                     changed = true;
