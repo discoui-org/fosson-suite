@@ -1,0 +1,7 @@
+{
+    "appName": "Mail",
+    "appPath": "apps/Mail",
+    "oldPackage": "ch.protonmail.android",
+    "newPackage": "me.proton.hoaxcherry.mail",
+    "newTitle": "Mail"
+}

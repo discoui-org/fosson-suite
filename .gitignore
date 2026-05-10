@@ -1,0 +1,30 @@
+cat > .gitignore << 'EOF'
+# Android Build Outputs
+build/
+app/build/
+*.apk
+*.aab
+*.dex
+*.class
+
+# IDE Files
+.idea/
+*.iml
+.gradle/
+local.properties
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+EOF
+
+# Node Modules
+<<<<<<< Updated upstream
+node_modules/
+=======
+node_modules/
+apps/*-build-cache/apps/protonauthenticator-build-cache/
+>>>>>>> Stashed changes

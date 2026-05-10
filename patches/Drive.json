@@ -1,0 +1,7 @@
+{
+    "appName": "Drive",
+    "appPath": "apps/Drive",
+    "oldPackage": "me.proton.android.drive",
+    "newPackage": "me.proton.hoaxcherry.drive",
+    "newTitle": "Drive"
+}

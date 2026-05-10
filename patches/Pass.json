@@ -1,0 +1,7 @@
+{
+    "appName": "Pass",
+    "appPath": "apps/Pass",
+    "oldPackage": "me.proton.android.pass",
+    "newPackage": "me.proton.hoaxcherry.pass",
+    "newTitle": "Pass"
+}

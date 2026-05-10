@@ -1,0 +1,26 @@
+{
+  "name": "myprotonsuite",
+  "version": "1.0.0",
+  "description": "hey",
+  "homepage": "https://github.com/discoui-org/MyProtonSuite#readme",
+  "bugs": {
+    "url": "https://github.com/discoui-org/MyProtonSuite/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/discoui-org/MyProtonSuite.git"
+  },
+  "author": "discoui-org",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.js",
+    "clone": "node clone.js",
+    "update": "node update.js",
+    "patch": "node patch.js"
+  },
+  "dependencies": {
+    "execa": "^9.6.1"
+  }
+}

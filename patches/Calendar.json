@@ -1,0 +1,7 @@
+{
+    "appName": "Calendar",
+    "appPath": "apps/Calendar",
+    "oldPackage": "me.proton.android.calendar",
+    "newPackage": "me.proton.hoaxcherry.calendar",
+    "newTitle": "Calendar"
+}

@@ -1,0 +1,7 @@
+{
+    "appName": "VPN",
+    "appPath": "apps/VPN",
+    "oldPackage": "ch.protonvpn.android",
+    "newPackage": "me.proton.hoaxcherry.vpn",
+    "newTitle": "VPN"
+}
