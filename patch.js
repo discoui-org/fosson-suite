@@ -58,8 +58,8 @@ patchFiles.forEach(file => {
             if (isConfigFile && content.includes(oldPkg)) {
                 const lines = content.split('\n');
                 const patchedLines = lines.map(line => {
-                    // Namespace satırlarını elleme ki R referansları bozulmasın
-                    if (line.includes('namespace') || line.includes('NAMESPACE')) {
+                    // Sınıf yollarını (android:name) ve Namespace satırlarını elleme
+                    if (line.includes('android:name') || line.includes('namespace') || line.includes('NAMESPACE')) {
                         return line;
                     }
                     
@@ -101,12 +101,24 @@ patchFiles.forEach(file => {
             }
 
             // --- D. Write changes back to file ---
+            // --- C. Custom Replacements (User Defined) ---
+            if (config.customReplacements && Array.isArray(config.customReplacements)) {
+                config.customReplacements.forEach(rep => {
+                    if (content.includes(rep.target)) {
+                        while (content.includes(rep.target)) {
+                            content = content.replace(rep.target, rep.replacement || '');
+                            changed = true;
+                        }
+                    }
+                });
+            }
+
             if (changed) {
-                fs.writeFileSync(filePath, content);
+                fs.writeFileSync(filePath, content, 'utf8');
                 console.log(`   ✅ Modified: ${path.relative(baseDir, filePath)}`);
             }
         }
     });
 });
 
-console.log("\n✨ All patches applied successfully!");
+console.log('\n✨ All patches applied successfully!');
