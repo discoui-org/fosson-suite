@@ -1,17 +1,29 @@
 {
-    "dark": {
-        "background": "#000000",
-        "surface": "#000000"
+    "options": {
+        "background": "amoled",
+        "accent": "aesthetic_purple",
+        "fonts": "system"
     },
-    "light": {
-        "background": "#FFFFFF",
-        "surface": "#F5F5F5"
-    },
-    "accent": {
-        "primary": "#6D4CFF",
-        "secondary": "#573BCC"
-    },
-    "fonts": {
-        "useSystemFont": true
+    "presets": {
+        "amoled": {
+            "background": "#000000",
+            "surface": "#000000"
+        },
+        "light": {
+            "background": "#FFFFFF",
+            "surface": "#F5F5F5"
+        },
+        "aesthetic_purple": {
+            "primary": "#6D4CFF",
+            "secondary": "#573BCC"
+        },
+        "aesthetic_blue": {
+            "primary": "#3691FF",
+            "secondary": "#2A70C6"
+        },
+        "aesthetic_pink": {
+            "primary": "#FF6DAB",
+            "secondary": "#CC5789"
+        }
     }
 }

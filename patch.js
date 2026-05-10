@@ -14,10 +14,12 @@ let patchFiles = fs.readdirSync(patchesDir).filter(f => f.endsWith('.json'));
 // --- Theme Loading ---
 const themePath = path.join(__dirname, 'theme.json');
 let themeConfig = {
-    dark: { background: "#000000", surface: "#000000" },
-    light: { background: "#FFFFFF", surface: "#F5F5F5" },
-    accent: { primary: "#6D4CFF", secondary: "#573BCC" },
-    fonts: { useSystemFont: true }
+    options: { background: "amoled", accent: "aesthetic_purple", fonts: "system" },
+    presets: {
+        amoled: { background: "#000000", surface: "#000000" },
+        light: { background: "#FFFFFF", surface: "#F5F5F5" },
+        aesthetic_purple: { primary: "#6D4CFF", secondary: "#573BCC" }
+    }
 };
 
 if (fs.existsSync(themePath)) {
@@ -29,9 +31,28 @@ if (fs.existsSync(themePath)) {
     }
 }
 
+// Prepare resolved colors based on selected options
+const selectedBg = themeConfig.options.background;
+const selectedAccent = themeConfig.options.accent;
+
+const resolvedColors = {
+    dark: {
+        background: selectedBg === "amoled" ? themeConfig.presets.amoled.background : null,
+        surface: selectedBg === "amoled" ? themeConfig.presets.amoled.surface : null
+    },
+    light: {
+        background: themeConfig.presets.light.background,
+        surface: themeConfig.presets.light.surface
+    },
+    accent: {
+        primary: (selectedAccent !== "proton_default") ? (themeConfig.presets[selectedAccent]?.primary || themeConfig.presets.aesthetic_purple.primary) : null,
+        secondary: (selectedAccent !== "proton_default") ? (themeConfig.presets[selectedAccent]?.secondary || themeConfig.presets.aesthetic_purple.secondary) : null
+    }
+};
+
 // Function to convert hex to Compose Color format (0xFFRRGGBB)
 function toComposeColor(hex) {
-    if (!hex) return "Color.Black";
+    if (!hex) return null;
     let cleanHex = hex.replace('#', '');
     if (cleanHex.length === 6) cleanHex = 'FF' + cleanHex;
     return `Color(color = 0x${cleanHex.toUpperCase()})`;
@@ -65,6 +86,17 @@ patchFiles.forEach(file => {
     if (!fs.existsSync(baseDir)) {
         console.warn(`   Directory not found, skipping: ${config.appPath}`);
         return;
+    }
+
+    // --- NEW: Create new files if specified ---
+    if (config.newFiles && Array.isArray(config.newFiles)) {
+        config.newFiles.forEach(fileDef => {
+            const fullPath = path.join(baseDir, fileDef.path);
+            const dir = path.dirname(fullPath);
+            if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+            fs.writeFileSync(fullPath, fileDef.content, 'utf8');
+            console.log(`   Created New File: ${fileDef.path}`);
+        });
     }
 
     /**
@@ -139,6 +171,13 @@ patchFiles.forEach(file => {
             // --- D. Custom Replacements ---
             if (config.customReplacements && Array.isArray(config.customReplacements)) {
                 config.customReplacements.forEach(rep => {
+                    // Check if this replacement is restricted to specific files
+                    if (rep.files && Array.isArray(rep.files)) {
+                        const fileName = path.basename(filePath);
+                        const isMatch = rep.files.some(f => filePath.endsWith(f) || fileName === f);
+                        if (!isMatch) return;
+                    }
+
                     const featureName = rep.name || 'Custom Patch';
                     
                     // Support both single patch and array of patches
@@ -147,22 +186,33 @@ patchFiles.forEach(file => {
                     patches.forEach(p => {
                         let target = p.target;
                         let replacement = p.replacement || '';
+                        let skipPatch = false;
 
                         // Resolve dynamic theme variables in replacement
                         if (replacement.includes('{{theme.')) {
-                            replacement = replacement.replace(/{{theme\.dark\.background}}/g, toComposeColor(themeConfig.dark.background));
-                            replacement = replacement.replace(/{{theme\.dark\.surface}}/g, toComposeColor(themeConfig.dark.surface));
-                            replacement = replacement.replace(/{{theme\.light\.background}}/g, toComposeColor(themeConfig.light.background));
-                            replacement = replacement.replace(/{{theme\.accent\.primary}}/g, toComposeColor(themeConfig.accent.primary));
-                            replacement = replacement.replace(/{{theme\.accent\.secondary}}/g, toComposeColor(themeConfig.accent.secondary));
+                            const vars = {
+                                '{{theme.dark.background}}': toComposeColor(resolvedColors.dark.background),
+                                '{{theme.dark.surface}}': toComposeColor(resolvedColors.dark.surface),
+                                '{{theme.light.background}}': toComposeColor(resolvedColors.light.background),
+                                '{{theme.accent.primary}}': toComposeColor(resolvedColors.accent.primary),
+                                '{{theme.accent.secondary}}': toComposeColor(resolvedColors.accent.secondary)
+                            };
+
+                            for (const [key, value] of Object.entries(vars)) {
+                                if (replacement.includes(key)) {
+                                    if (value === null) {
+                                        skipPatch = true;
+                                        break;
+                                    }
+                                    replacement = replacement.replace(new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), value);
+                                }
+                            }
                         }
 
-                        if (content.includes(target)) {
-                            while (content.includes(target)) {
-                                content = content.replace(target, replacement);
-                                changed = true;
-                                appliedPatches.add(`Feature: ${featureName}`);
-                            }
+                        if (!skipPatch && content.includes(target)) {
+                            content = content.split(target).join(replacement);
+                            changed = true;
+                            appliedPatches.add(`Feature: ${featureName}`);
                         }
                     });
                 });
