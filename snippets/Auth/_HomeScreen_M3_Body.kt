@@ -1,4 +1,4 @@
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
         modifier = Modifier
@@ -6,36 +6,26 @@
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            androidx.compose.foundation.layout.Column {
-                LargeTopAppBar(
-                    title = {
-                        Text(
-                            text = stringResource(id = uiR.string.authenticator_proton_authenticator)
+            LargeTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = uiR.string.authenticator_proton_authenticator)
+                    )
+                },
+                actions = {
+                    IconButton(onClick = onSettingsClick) {
+                        Icon(
+                            painter = painterResource(id = uiR.drawable.ic_settings_alt),
+                            contentDescription = null
                         )
-                    },
-                    actions = {
-                        IconButton(onClick = onSettingsClick) {
-                            Icon(
-                                painter = painterResource(id = uiR.drawable.ic_settings_alt),
-                                contentDescription = null
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.largeTopAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
-                    ),
-                    scrollBehavior = scrollBehavior
-                )
-                SearchTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 8.dp),
-                    value = state.searchQuery,
-                    onValueChange = ::onUpdateEntrySearchQuery
-                )
-            }
+                    }
+                },
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
+                ),
+                scrollBehavior = scrollBehavior
+            )
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -56,6 +46,15 @@
                 .padding(paddingValues = paddingValues),
             state = state,
             listState = lazyListState,
+            header = {
+                SearchTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    value = state.searchQuery,
+                    onValueChange = ::onUpdateEntrySearchQuery
+                )
+            },
             onNewEntryClick = onNewEntryClick,
             onImportEntriesClick = onImportEntriesClick,
             onEditEntryClick = onEditEntryClick,
