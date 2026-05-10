@@ -175,6 +175,17 @@ jobs:
         with:
           path: all-apks
           merge-multiple: true
+        continue-on-error: true
+
+      - name: Fetch latest APKs from Releases (if no build was run)
+        shell: bash
+        run: |
+          if [ ! -d "all-apks" ] || [ -z "$(ls -A all-apks/*.apk 2>/dev/null)" ]; then
+            echo "[!] No artifacts found from this run. Fetching latest APKs from GitHub Releases..."
+            mkdir -p all-apks
+            # Download all APKs from the latest release
+            gh release download --pattern "*.apk" --dir all-apks
+          fi
 
       - name: Install F-Droid Server
         run: |
