@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fosson Suite - F-Droid Repository</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --md-sys-color-primary: rgb(26, 35, 126);
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-primary-container: rgb(221, 225, 255);
+            --md-sys-color-on-primary-container: #001466;
+            --md-sys-color-surface: #FDFBFF;
+            --md-sys-color-surface-variant: #E2E2EC;
+            --md-sys-color-on-surface: #1B1B1F;
+            --md-sys-color-outline: #767680;
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 24px;
+        }
+        .container { max-width: 600px; width: 100%; text-align: center; }
+        .header { margin-top: 48px; margin-bottom: 32px; }
+        .logo-container img { width: 96px; height: 96px; border-radius: 24px; }
+        h1 { font-weight: 500; font-size: 2.5rem; margin: 0; }
+        .subtitle { color: var(--md-sys-color-outline); font-size: 1.1rem; margin-top: 8px; }
+        .card {
+            background-color: var(--md-sys-color-primary-container);
+            color: var(--md-sys-color-on-primary-container);
+            border-radius: 28px;
+            padding: 32px;
+            margin-top: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .qr-outer { background: white; padding: 16px; border-radius: 20px; margin-bottom: 24px; }
+        .qr-outer img { display: block; width: 180px; height: 180px; }
+        .url-chip {
+            background-color: var(--md-sys-color-surface);
+            color: var(--md-sys-color-primary);
+            padding: 12px 24px; border-radius: 100px;
+            font-family: monospace; font-size: 0.85rem;
+            margin: 16px 0; border: 1px solid var(--md-sys-color-outline);
+            cursor: pointer;
+        }
+        .instruction-list { text-align: left; width: 100%; margin-top: 24px; background: rgba(255,255,255,0.4); border-radius: 20px; padding: 20px; }
+        .step { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+        .step-icon {
+            background-color: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary);
+            width: 28px; height: 28px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8rem;
+        }
+        footer { margin-top: auto; padding: 48px 0; color: var(--md-sys-color-outline); font-size: 0.85rem; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <img src="https://raw.githubusercontent.com/discoui-org/fosson-suite/main/assets/icon.svg" alt="Fosson Logo">
+            </div>
+            <h1>Fosson Suite</h1>
+            <p class="subtitle">Premium Privacy Experience</p>
+        </div>
+        <div class="card">
+            <div class="qr-outer">
+                <img src="index.png" alt="QR Code">
+            </div>
+            <p style="margin: 0; font-weight: 500;">Add to F-Droid</p>
+            <div class="url-chip" onclick="navigator.clipboard.writeText(this.innerText); alert('URL Copied!')">
+                https://discoui-org.github.io/fosson-suite/fdroid/repo
+            </div>
+            <div class="instruction-list">
+                <div class="step"><div class="step-icon">1</div> Open F-Droid on your device</div>
+                <div class="step"><div class="step-icon">2</div> Settings &gt; Repositories</div>
+                <div class="step"><div class="step-icon">3</div> Tap + and paste the URL</div>
+                <div class="step"><div class="step-icon">4</div> Refresh and enjoy Fosson</div>
+            </div>
+        </div>
+    </div>
+    <footer>"The internet is a scary place. ily Proton." — Hoax Cherry</footer>
+</body>
+</html>
