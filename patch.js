@@ -28,10 +28,10 @@ patchFiles.forEach(file => {
     function walkSync(dir, callback) {
         fs.readdirSync(dir).forEach(file => {
             const filePath = path.join(dir, file);
+            const stat = fs.statSync(filePath);
             
-            // Skip hidden folders, build artifacts, and node_modules
-            if (fs.statSync(filePath).isDirectory()) {
-                if (!file.startsWith('.') && file !== 'build' && file !== 'node_modules') {
+            if (stat.isDirectory()) {
+                if (file !== 'build' && file !== 'node_modules' && file !== '.git') {
                     walkSync(filePath, callback);
                 }
             } else {
@@ -48,15 +48,36 @@ patchFiles.forEach(file => {
             let changed = false;
 
             // --- A. Package Name Replacement ---
-            // Sadece tam paket eşleşmelerini veya paketle başlayan alt yolları değiştirir.
-            // Örneğin "proton.android.auth" içindeki "android.auth" kısmını yanlışlıkla değiştirmemesi için.
-            if (content.includes(config.oldPackage)) {
-                // Regex: isteğe bağlı olarak başındaki "me." kısmını da yakalar 
-                // ve tüm bloğu newPackage ile değiştirir.
-                const packageRegex = new RegExp('(?<![a-zA-Z0-9])(me\\.)?' + config.oldPackage.replace(/\./g, '\\.'), 'g');
-                if (packageRegex.test(content)) {
-                    content = content.replace(packageRegex, config.newPackage);
-                    changed = true;
+            const oldPkg = config.oldPackage;
+            const newPkg = config.newPackage;
+            
+            // SADECE build, config ve build-logic dosyalarında paket ismini değiştir
+            const isBuildLogic = filePath.includes('build-logic') || filePath.includes('buildSrc');
+            const isConfigFile = ['.kts', '.gradle', '.xml', '.properties'].includes(ext) || filePath.includes('PlatformAndroidConfig.kt') || isBuildLogic;
+            
+            if (isConfigFile && content.includes(oldPkg)) {
+                const lines = content.split('\n');
+                const patchedLines = lines.map(line => {
+                    // Namespace satırlarını elleme ki R referansları bozulmasın
+                    if (line.includes('namespace') || line.includes('NAMESPACE')) {
+                        return line;
+                    }
+                    
+                    let newLine = line;
+                    const oldWithMe = 'me.' + oldPkg;
+                    while (newLine.includes(oldWithMe)) {
+                        newLine = newLine.replace(oldWithMe, newPkg);
+                        changed = true;
+                    }
+                    while (newLine.includes(oldPkg)) {
+                        newLine = newLine.replace(oldPkg, newPkg);
+                        changed = true;
+                    }
+                    return newLine;
+                });
+                
+                if (changed) {
+                    content = patchedLines.join('\n');
                 }
             }
 

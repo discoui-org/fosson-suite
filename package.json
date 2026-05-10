@@ -19,7 +19,7 @@
     "clone": "node clone.js",
     "update": "node update.js",
     "patch": "node patch.js",
-    "reset": "for dir in apps/*; do if [ -d \"$dir\" ]; then (cd \"$dir\" && git reset --hard && git clean -fd); fi; done"
+    "reset": "for dir in apps/*; do if [ -d \"$dir/.git\" ]; then (cd \"$dir\" && git reset --hard); fi; done"
   },
   "dependencies": {
     "execa": "^9.6.1"
