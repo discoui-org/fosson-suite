@@ -206,6 +206,9 @@ jobs:
           cp all-apks/*.apk deploy/fdroid/repo/
           
           # 2. F-Droid konfigürasyonunu hazırla
+          # Repo ikonunu hazırla (SVG'den PNG'ye çevir - Ana dizinde çalıştır)
+          node -e "require('sharp')('assets/icon.svg').resize(512, 512).toFile('assets/icon.png').then(() => console.log('Icon converted to PNG')).catch(err => console.error(err))"
+          
           mkdir -p fdroid-tool
           cd fdroid-tool
           if [ ! -f "config.yml" ]; then
@@ -220,11 +223,11 @@ jobs:
           sed -i 's|repo_icon:.*|repo_icon: icon.png|g' config.yml
           sed -i 's|repo_description:.*|repo_description: Official F-Droid repository for Fosson Suite. A collection of de-telemetrized and Material 3 branded applications.|g' config.yml
           
-          # Repo ikonunu hazırla (SVG'den PNG'ye çevir)
-          node -e "require('sharp')('../assets/icon.svg').resize(512, 512).toFile('icon.png').then(() => console.log('Icon converted to PNG')).catch(err => console.error(err))"
+          # Repo ikonunu klasöre kopyala
+          cp ../assets/icon.png ./icon.png
           
           # Kontrol için
-          ls -lh icon.png || echo "Icon conversion failed"
+          ls -lh icon.png || echo "Icon not found"
           echo "--- DEBUG: config.yml content ---"
           grep -E "repo_url|repo_name|repo_icon|repo_description" config.yml
           echo "---------------------------------"

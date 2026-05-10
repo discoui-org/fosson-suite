@@ -159,11 +159,25 @@ patchFiles.forEach(file => {
                 }
             }
 
-            // --- A2. Update R class imports in source files ---
-            if ((ext === '.kt' || ext === '.java') && content.includes(oldPkg + '.R')) {
-                content = content.split(oldPkg + '.R').join(newPkg + '.R');
-                changed = true;
-                appliedPatches.add('Source R Imports');
+            // --- A2. Update all source imports and references in source files ---
+            if ((ext === '.kt' || ext === '.java') && content.includes(oldPkg)) {
+                // R class, databinding, and internal references
+                const lines = content.split('\n');
+                const patchedLines = lines.map(line => {
+                    if (line.trim().startsWith('import ') || line.includes(oldPkg + '.')) {
+                        let newLine = line;
+                        while (newLine.includes(oldPkg)) {
+                            newLine = newLine.replace(oldPkg, newPkg);
+                            changed = true;
+                        }
+                        return newLine;
+                    }
+                    return line;
+                });
+                if (changed) {
+                    content = patchedLines.join('\n');
+                    appliedPatches.add('Source Package Imports');
+                }
             }
 
             // --- B. App Title Replacement ---
