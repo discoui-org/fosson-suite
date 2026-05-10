@@ -192,7 +192,9 @@ jobs:
       - name: Install F-Droid Server
         run: |
           sudo apt-get update
-          sudo apt-get install -y fdroidserver
+          sudo apt-get install -y python3-pip python3-setuptools libjpeg-dev zlib1g-dev
+          pip3 install --user fdroidserver
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Setup F-Droid Repo
         run: |
