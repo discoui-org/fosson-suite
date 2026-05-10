@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import android.os.Build
+import androidx.compose.ui.graphics.luminance
 
 @Composable
 fun isNightMode(): Boolean = isSystemInDarkTheme()
@@ -40,12 +41,13 @@ class MaterialYouThemeColors(val m3: ColorScheme, val isDark: Boolean) : ThemeCo
     override val actionButtonBorderGradientBottom: Color get() = m3.outlineVariant
     override val backgroundButtonBorderWeak: Color get() = m3.outline.copy(alpha = 0.5f)
     override val backgroundDropdown: Color get() = m3.surfaceContainerHigh
+    // Use the actual M3 background so pitch-black ROMs are respected
     override val backgroundGradientTop: Color get() = m3.background
     override val backgroundGradientBottom: Color get() = m3.background
     override val backgroundTopBar: Color get() = m3.surface
     override val buttonGradientTop: Color get() = m3.primary
     override val buttonGradientBottom: Color get() = m3.primary
-    override val containerBackground: Color get() = m3.surfaceContainerLow
+    override val containerBackground: Color get() = m3.surfaceContainer
     override val containerBorder: Color get() = m3.outlineVariant
     override val containerInnerShadow: Color get() = Color.Transparent
     override val gradientBannerColor1: Color get() = m3.tertiary
@@ -62,15 +64,16 @@ class MaterialYouThemeColors(val m3: ColorScheme, val isDark: Boolean) : ThemeCo
     override val gradientButtonColor2: Color get() = m3.primary
     override val gradientTopBarColor1: Color get() = m3.surface
     override val gradientTopBarColor2: Color get() = m3.surface
-    override val iconBackground: Color get() = m3.surfaceVariant
-    override val iconBorder: Color get() = m3.outline
+    override val iconBackground: Color get() = m3.surfaceContainerHigh
+    override val iconBorder: Color get() = m3.outlineVariant
     override val inputBackground: Color get() = m3.surfaceContainerLowest
     override val inputBorder: Color get() = m3.outline
     override val inputBorderFocused: Color get() = m3.primary
     override val interactionPurple: Color get() = m3.primary.copy(alpha = 0.2f)
     override val interactionPurpleNorm: Color get() = m3.primary
-    override val menuListBackground: Color get() = m3.surfaceContainerHigh
-    override val menuListBorder: Color get() = m3.outlineVariant
+    // Card/section backgrounds - use surfaceContainer so they're clearly visible
+    override val menuListBackground: Color get() = m3.surfaceContainer
+    override val menuListBorder: Color get() = m3.outlineVariant.copy(alpha = 0.5f)
     override val signalError: Color get() = m3.error
     override val signalDanger: Color get() = m3.error
     override val signalSuccess: Color get() = Color(0xFF4AB89A)
@@ -106,8 +109,10 @@ fun createM3TypographyBridge(m3: Typography): ThemeTypography = object : ThemeTy
 @Composable
 fun Theme(isDarkTheme: Boolean = isNightMode(), content: @Composable () -> Unit) {
     val context = LocalContext.current
-    // We ignore the isDarkTheme parameter and always follow system
     val forcedDark = isNightMode()
+
+    // Use dynamic colors (Monet) on Android 12+; they automatically reflect
+    // the wallpaper palette AND any ROM-level overrides to system color tokens.
     val dynamicColorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         if (forcedDark) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
     } else {
