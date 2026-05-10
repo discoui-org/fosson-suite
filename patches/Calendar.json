@@ -3,5 +3,6 @@
     "appPath": "apps/Calendar",
     "oldPackage": "me.proton.android.calendar",
     "newPackage": "me.proton.hoaxcherry.calendar",
-    "newTitle": "Calendar"
+    "newTitle": "Calendar",
+    "buildTask": "assembleProdRelease"
 }

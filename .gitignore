@@ -1,11 +1,11 @@
-cat > .gitignore << 'EOF'
 # Android Build Outputs
 build/
-app/build/
+**/build/
 *.apk
 *.aab
 *.dex
 *.class
+*.aar
 
 # IDE Files
 .idea/
@@ -15,23 +15,21 @@ local.properties
 
 # OS Files
 .DS_Store
+Thumbs.db
 local.build.sh
 local.install.sh
-Thumbs.db
 
 # Log files
 *.log
-EOF
+crash.log
 
 # Node Modules
-<<<<<<< HEAD
-<<<<<<< Updated upstream
 node_modules/
-=======
-node_modules/
-apps/*-build-cache/apps/protonauthenticator-build-cache/
->>>>>>> Stashed changes
-=======
-node_modules/
+
+# Dependencies & Libraries
+apps/proton-libs/
+apps/gopenpgp/
 apps/*-build-cache/
->>>>>>> a918cc0 (chore: ignore build caches and disable telemetry and logging in Auth patches)
+
+# Errors & Temp
+.errors/

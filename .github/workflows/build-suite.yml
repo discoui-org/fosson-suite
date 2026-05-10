@@ -90,6 +90,9 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Setup Core Libraries
+        run: npm run setup-libs
+
       - name: Apply Custom Patches and Generate Icons
         run: npm run patch -- --app ${{ matrix.app }}
         env:
@@ -207,15 +210,22 @@ jobs:
           cd fdroid-tool
           if [ ! -f "config.yml" ]; then
             fdroid init --no-prompt
-            # ÖNEMLİ: init ile oluşan boş repo klasörünü sil ki linkleme yapabilelim
+            # init ile oluşan boş repo klasörünü sil ki linkleme yapabilelim
             rm -rf repo
-            # Repo URL'sini kesin olarak ayarla (içinde ne yazarsa yazsın ezer)
-            sed -i "s|^repo_url:.*|repo_url: https://discoui-org.github.io/fosson-suite/fdroid/repo|g" config.yml
-            sed -i "s|^repo_name:.*|repo_name: Fosson Suite Repository|g" config.yml
           fi
           
+          # URL ve metadata güncellemelerini HER ZAMAN yapalım (if dışında)
+          # 'repo_url:' ile başlayan her şeyi yakala
+          sed -i 's|repo_url:.*|repo_url: https://discoui-org.github.io/fosson-suite/fdroid/repo|g' config.yml
+          sed -i 's|repo_name:.*|repo_name: Fosson Suite Repository|g' config.yml
+          
+          # Kontrol için config dosyasını loglara yazalım (gizli bilgi içermez)
+          echo "--- DEBUG: config.yml content ---"
+          grep "repo_url" config.yml
+          echo "---------------------------------"
+          
           # 3. APK'ları araca göster ve update et (artık linkleme başarılı olacak)
-          ln -s ../deploy/fdroid/repo repo
+          ln -sf ../deploy/fdroid/repo repo
           fdroid update --create-metadata --verbose
           
           # 4. QR kodu ana dizine kopyala

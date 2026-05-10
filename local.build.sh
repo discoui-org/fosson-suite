@@ -42,16 +42,17 @@ build_app() {
     # Extract appPath and appName from JSON using node (simple and available)
     local app_path=$(node -e "console.log(require('./$json_file').appPath)")
     local app_name=$(node -e "console.log(require('./$json_file').appName)")
+    local build_task=$(node -e "console.log(require('./$json_file').buildTask || 'assembleFdroidProdRelease')")
     
     echo ""
     echo "===================================================="
-    echo "BUILDING: $app_name (at $app_path)"
+    echo "BUILDING: $app_name (at $app_path) with task $build_task"
     echo "===================================================="
     echo ""
     
     cd "$app_path" || return
     
-    ./gradlew assembleFdroidProdRelease \
+    ./gradlew $build_task \
       -PMYAPP_RELEASE_STORE_FILE="$KEYSTORE_FILE" \
       -PMYAPP_RELEASE_STORE_PASSWORD="$KEYSTORE_PASSWORD" \
       -PMYAPP_RELEASE_KEY_ALIAS="$KEY_ALIAS" \

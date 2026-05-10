@@ -19,6 +19,7 @@
     "clone": "node clone.js",
     "update": "node update.js",
     "patch": "node generate-icons.js \"$@\" && node patch.js \"$@\"",
+    "setup-libs": "mkdir -p apps && ( [ -d apps/proton-libs ] || git clone --depth 1 https://github.com/ProtonMail/protoncore_android.git apps/proton-libs ) && ( [ -d apps/gopenpgp ] || git clone --depth 1 https://github.com/ProtonMail/gopenpgp.git apps/gopenpgp )",
     "local-build": "sh -c 'if [ -f local.build.sh ]; then ./local.build.sh \"$@\"; else echo \"local build yok\"; fi' --",
     "local-install": "sh -c 'if [ -f local.install.sh ]; then ./local.install.sh \"$@\"; else echo \"local build yok\"; fi' --",
     "reset": "for dir in apps/*; do if [ -d \"$dir/.git\" ]; then (cd \"$dir\" && git reset --hard); fi; done; rm -rf snippets/*/icons"
