@@ -1,14 +1,23 @@
+<div align="center">
+  <img src="assets/icon.svg" alt="Fosson Suite logo" width="128" />
+  <h1>Fosson Suite</h1>
+</div>
+
 <p align="center">
-  <img src="assets/icon.svg" width="128" height="128" alt="Fosson Suite Logo">
+  A professional patching and build ecosystem for the Proton application suite. Fosson focuses on removing telemetry and <b>adding an extra layer of love to your privacy</b>—even though Proton is already a legend at it.
 </p>
 
-# Fosson Suite
-
-[![Fosson Suite Release](https://img.shields.io/github/v/release/discoui-org/MyProtonSuite?label=Latest%20Build&color=7C4DFF&style=for-the-badge)](https://github.com/discoui-org/MyProtonSuite/releases)
-[![F-Droid Compatible](https://img.shields.io/badge/F--Droid-Compatible-3DDC84?style=for-the-badge&logo=android)](https://github.com/discoui-org/MyProtonSuite)
-[![Privacy Hardened](https://img.shields.io/badge/Privacy-Hardened-000000?style=for-the-badge)](https://github.com/discoui-org/MyProtonSuite)
-
-Fosson Suite is a professional patching and build ecosystem for the Proton application suite (Auth, Pass, VPN, Drive, Mail, and Calendar). It focuses on removing telemetry, adding an extra layer of love to your privacy (even though Proton is already a legend at it), and delivering a unified, premium user experience.
+<p align="center">
+  <a href="https://github.com/discoui-org/MyProtonSuite/releases">
+    <img src="https://img.shields.io/github/v/release/discoui-org/MyProtonSuite?label=Latest%20Build&color=7C4DFF&style=for-the-badge" alt="Latest Build">
+  </a>
+  <a href="https://github.com/discoui-org/MyProtonSuite">
+    <img src="https://img.shields.io/badge/F--Droid-Compatible-3DDC84?style=for-the-badge&logo=android" alt="F-Droid Compatible">
+  </a>
+  <a href="https://github.com/discoui-org/MyProtonSuite">
+    <img src="https://img.shields.io/badge/Privacy-Hardened-000000?style=for-the-badge" alt="Privacy Hardened">
+  </a>
+</p>
 
 ---
 
