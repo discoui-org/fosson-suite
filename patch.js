@@ -42,8 +42,8 @@ patchFiles.forEach(file => {
 
     walkSync(baseDir, (filePath) => {
         const ext = path.extname(filePath);
-        // Only target relevant Android/Kotlin/Gradle files
-        if (['.kts', '.xml', '.kt', '.gradle', '.java'].includes(ext)) {
+        // Only target relevant Android/Kotlin/Gradle/Proto files
+        if (['.kts', '.xml', '.kt', '.gradle', '.java', '.proto', '.properties'].includes(ext)) {
             let content = fs.readFileSync(filePath, 'utf8');
             let changed = false;
 

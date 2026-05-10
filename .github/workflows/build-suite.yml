@@ -47,9 +47,9 @@ jobs:
             (if env.AUTH == "true" then {app: "Auth", task: "assembleFdroidProdRelease"} else empty end),
             (if env.CALENDAR == "true" then {app: "Calendar", task: "assembleProdRelease"} else empty end),
             (if env.DRIVE == "true" then {app: "Drive", task: "assembleProdRelease"} else empty end),
-            (if env.MAIL == "true" then {app: "Mail", task: "assembleProdRelease"} else empty end),
+            (if env.MAIL == "true" then {app: "Mail", task: "assembleFdroidProdRelease"} else empty end),
             (if env.PASS == "true" then {app: "Pass", task: "assembleFdroidProdRelease"} else empty end),
-            (if env.VPN == "true" then {app: "VPN", task: "assembleProductionVanillaRelease"} else empty end)
+            (if env.VPN == "true" then {app: "VPN", task: "assembleProductionVanillaOpenSourceRelease"} else empty end)
           ]}')
           echo "matrix=$JSON" >> $GITHUB_OUTPUT
 
