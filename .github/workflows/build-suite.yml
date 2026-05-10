@@ -186,6 +186,8 @@ jobs:
             # Download all APKs from the latest release
             gh release download --pattern "*.apk" --dir all-apks
           fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install F-Droid Server
         run: |
