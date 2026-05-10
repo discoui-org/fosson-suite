@@ -100,7 +100,17 @@ patchFiles.forEach(file => {
                 }
             }
 
-            // --- C. Custom Replacements ---
+            // --- C. Remove applicationIdSuffix (Clean Package Name) ---
+            if (['.gradle', '.kts'].includes(ext)) {
+                const suffixRegex = /applicationIdSuffix\s*=?\s*['"].*?['"]/g;
+                if (suffixRegex.test(content)) {
+                    content = content.replace(suffixRegex, '// applicationIdSuffix removed by patch.js');
+                    changed = true;
+                    appliedPatches.add('Package Name Suffix Clean');
+                }
+            }
+
+            // --- D. Custom Replacements ---
             if (config.customReplacements && Array.isArray(config.customReplacements)) {
                 config.customReplacements.forEach(rep => {
                     if (content.includes(rep.target)) {
