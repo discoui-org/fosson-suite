@@ -189,6 +189,10 @@ patchFiles.forEach(file => {
                         if (!isMatch) return;
                     }
 
+                    if (rep.disabled) {
+                        console.log(`   [SKIP] ${rep.name || 'Custom Patch'} (Disabled)`);
+                        return;
+                    }
                     const featureName = rep.name || 'Custom Patch';
                     
                     // Support both single patch and array of patches
