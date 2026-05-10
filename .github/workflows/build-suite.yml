@@ -103,14 +103,52 @@ jobs:
           MYAPP_RELEASE_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           MYAPP_RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Upload APK for Repo
+      - name: Prepare Artifacts (Rename APK & Zip Source)
+        run: |
+          APK_PATH=$(find apps/${{ matrix.app }} -name "*.apk" | head -n 1)
+          NEW_APK_NAME="${{ matrix.app }}-fosson.${{ github.run_number }}.apk"
+          cp "$APK_PATH" "$NEW_APK_NAME"
+          zip -r "patched-source-${{ matrix.app }}.zip" "apps/${{ matrix.app }}" -x "**/build/*" "**/.gradle/*" "**/.git/*"
+
+      - name: Upload APK and Source
         uses: actions/upload-artifact@v4
         with:
-          name: apks-${{ matrix.app }}
-          path: apps/${{ matrix.app }}/**/release/*.apk
+          name: artifacts-${{ matrix.app }}
+          path: |
+            *.apk
+            *.zip
+
+  deploy-release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+          merge-multiple: true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: r${{ github.run_number }}
+          name: "Fasson Suite Release #${{ github.run_number }}"
+          body: |
+            ## Proton Suite Patched Build
+            Bu sürüm otomatik olarak yamalanmış ve derlenmiştir.
+            - Build Number: ${{ github.run_number }}
+            - Apps Included: Auth, Pass, VPN, Drive, Mail, Calendar
+          files: |
+            release-artifacts/*.apk
+            release-artifacts/*.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-fdroid:
-    needs: build
+    needs: deploy-release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
