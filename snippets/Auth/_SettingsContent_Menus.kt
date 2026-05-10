@@ -9,7 +9,7 @@
                 {
                     val context = LocalContext.current
                     val bgOptions = remember(CustomThemeManager.backgroundMode) {
-                        listOf("Proton Default", "AMOLED", "System (Material You)").map { label ->
+                        listOf("Default", "AMOLED", "System (Material You)").map { label ->
                             object : UiSelectorOption<String> {
                                 override val isSelected = (label == CustomThemeManager.backgroundMode)
                                 override val text = UiText.Dynamic(label)
@@ -27,7 +27,7 @@
                 {
                     val context = LocalContext.current
                     val colorOptions = remember(CustomThemeManager.accentColorMode) {
-                        listOf("Proton Default", "Aesthetic Purple", "Aesthetic Blue", "Aesthetic Pink", "System (Material You)").map { label ->
+                        listOf("Default", "Aesthetic Purple", "Aesthetic Blue", "Aesthetic Pink", "System (Material You)").map { label ->
                             object : UiSelectorOption<String> {
                                 override val isSelected = (label == CustomThemeManager.accentColorMode)
                                 override val text = UiText.Dynamic(label)

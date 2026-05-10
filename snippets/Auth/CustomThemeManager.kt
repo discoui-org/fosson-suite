@@ -9,8 +9,8 @@ import androidx.compose.ui.graphics.Color
 object CustomThemeManager {
     private const val PREFS_NAME = "custom_theme_prefs"
     
-    var backgroundMode by mutableStateOf("Proton Default")
-    var accentColorMode by mutableStateOf("Proton Default")
+    var backgroundMode by mutableStateOf("Default")
+    var accentColorMode by mutableStateOf("Default")
     
     var systemAccent by mutableStateOf<Color?>(null)
     var systemAccentSecondary by mutableStateOf<Color?>(null)
@@ -21,8 +21,12 @@ object CustomThemeManager {
     fun init(context: Context) {
         if (isInitialized) return
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        backgroundMode = prefs.getString("bg_mode", "Proton Default") ?: "Proton Default"
-        accentColorMode = prefs.getString("accent_mode", "Proton Default") ?: "Proton Default"
+        val storedBg = prefs.getString("bg_mode", "Default") ?: "Default"
+        backgroundMode = if (storedBg == "Proton Default") "Default" else storedBg
+        
+        val storedAccent = prefs.getString("accent_mode", "Default") ?: "Default"
+        accentColorMode = if (storedAccent == "Proton Default") "Default" else storedAccent
+        
         isInitialized = true
     }
 
