@@ -194,7 +194,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y python3-pip python3-setuptools libjpeg-dev zlib1g-dev
           pip3 install --user fdroidserver
-          echo "$HOME/.local/bin" >> $GITHUB_P      - name: Setup F-Droid Repo
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Setup F-Droid Repo
         run: |
           # 1. Klasör yapısını hazırla
           mkdir -p deploy/fdroid/repo
@@ -321,4 +323,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./deploy
           publish_branch: gh-pages
-          force_orphan: truen: true
+          force_orphan: true
