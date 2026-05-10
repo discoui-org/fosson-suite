@@ -1,0 +1,17 @@
+{
+    "amoled": {
+        "background": "#00ff00",
+        "surface": "#000000"
+    },
+    "light": {
+        "background": "#FFFFFF",
+        "surface": "#F5F5F5"
+    },
+    "accent": {
+        "primary": "#ff0000",
+        "secondary": "#ff0000"
+    },
+    "fonts": {
+        "useSystemFont": true
+    }
+}

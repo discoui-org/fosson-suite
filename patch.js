@@ -11,6 +11,32 @@ if (!fs.existsSync(patchesDir)) {
 
 let patchFiles = fs.readdirSync(patchesDir).filter(f => f.endsWith('.json'));
 
+// --- Theme Loading ---
+const themePath = path.join(__dirname, 'theme.json');
+let themeConfig = {
+    amoled: { background: "#000000", surface: "#000000" },
+    light: { background: "#FFFFFF", surface: "#F5F5F5" },
+    accent: { primary: "#6D4CFF", secondary: "#573BCC" },
+    fonts: { useSystemFont: true }
+};
+
+if (fs.existsSync(themePath)) {
+    try {
+        const customTheme = JSON.parse(fs.readFileSync(themePath, 'utf8'));
+        themeConfig = { ...themeConfig, ...customTheme };
+    } catch (e) {
+        console.warn("Warning: Could not parse theme.json, using defaults.");
+    }
+}
+
+// Function to convert hex to Compose Color format (0xFFRRGGBB)
+function toComposeColor(hex) {
+    if (!hex) return "Color.Black";
+    let cleanHex = hex.replace('#', '');
+    if (cleanHex.length === 6) cleanHex = 'FF' + cleanHex;
+    return `Color(color = 0x${cleanHex.toUpperCase()})`;
+}
+
 // --- Argument Parsing ---
 const args = process.argv.slice(2);
 const appArgIndex = args.indexOf('--app');
@@ -113,13 +139,32 @@ patchFiles.forEach(file => {
             // --- D. Custom Replacements ---
             if (config.customReplacements && Array.isArray(config.customReplacements)) {
                 config.customReplacements.forEach(rep => {
-                    if (content.includes(rep.target)) {
-                        while (content.includes(rep.target)) {
-                            content = content.replace(rep.target, rep.replacement || '');
-                            changed = true;
-                            appliedPatches.add(`Feature: ${rep.name || 'Custom Patch'}`);
+                    const featureName = rep.name || 'Custom Patch';
+                    
+                    // Support both single patch and array of patches
+                    const patches = rep.patches || [{ target: rep.target, replacement: rep.replacement }];
+                    
+                    patches.forEach(p => {
+                        let target = p.target;
+                        let replacement = p.replacement || '';
+
+                        // Resolve dynamic theme variables in replacement
+                        if (replacement.includes('{{theme.')) {
+                            replacement = replacement.replace(/{{theme\.amoled\.background}}/g, toComposeColor(themeConfig.amoled.background));
+                            replacement = replacement.replace(/{{theme\.amoled\.surface}}/g, toComposeColor(themeConfig.amoled.surface));
+                            replacement = replacement.replace(/{{theme\.light\.background}}/g, toComposeColor(themeConfig.light.background));
+                            replacement = replacement.replace(/{{theme\.accent\.primary}}/g, toComposeColor(themeConfig.accent.primary));
+                            replacement = replacement.replace(/{{theme\.accent\.secondary}}/g, toComposeColor(themeConfig.accent.secondary));
                         }
-                    }
+
+                        if (content.includes(target)) {
+                            while (content.includes(target)) {
+                                content = content.replace(target, replacement);
+                                changed = true;
+                                appliedPatches.add(`Feature: ${featureName}`);
+                            }
+                        }
+                    });
                 });
             }
 
