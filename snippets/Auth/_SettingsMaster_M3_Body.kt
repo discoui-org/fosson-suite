@@ -1,23 +1,13 @@
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-
     Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             LargeTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.settings_screen_title)
-                    )
-                },
+                title = { Text(text = stringResource(id = R.string.settings_screen_title)) },
                 navigationIcon = {
                     IconButton(onClick = onNavigationClick) {
-                        Icon(
-                            painter = painterResource(id = uiR.drawable.ic_arrow_left),
-                            contentDescription = null
-                        )
+                        Icon(painter = painterResource(id = uiR.drawable.ic_arrow_left), contentDescription = null)
                     }
                 },
                 colors = TopAppBarDefaults.largeTopAppBarColors(
@@ -34,8 +24,8 @@
                 SettingsContent(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(state = scrollState)
                         .navigationBarsPadding()
+                        .verticalScroll(state = scrollState)
                         .padding(paddingValues = paddingValues)
                         .padding(horizontal = ThemePadding.Medium),
                     state = currentState,
@@ -55,8 +45,6 @@
                     onFeedbackClick = onFeedbackClick,
                     onDiscoverAppClick = onDiscoverAppClick,
                     onViewLogsClick = onViewLogsClick,
-                    onShareTelemetryChange = ::onToggleShareTelemetry,
-                    onShareCrashReportChange = ::onToggleShareCrashReport,
                     onVersionNameClick = onVersionNameClick
                 )
             }
