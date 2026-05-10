@@ -14,8 +14,15 @@ let patchFiles = fs.readdirSync(patchesDir).filter(f => f.endsWith('.json'));
 // --- Argument Parsing ---
 const args = process.argv.slice(2);
 const appArgIndex = args.indexOf('--app');
+let targetApp = null;
+
 if (appArgIndex !== -1 && args[appArgIndex + 1]) {
-    const targetApp = args[appArgIndex + 1].toLowerCase();
+    targetApp = args[appArgIndex + 1].toLowerCase();
+} else if (args.length > 0 && !args[0].startsWith('--')) {
+    targetApp = args[0].toLowerCase();
+}
+
+if (targetApp) {
     patchFiles = patchFiles.filter(file => file.toLowerCase().startsWith(targetApp));
     if (patchFiles.length === 0) {
         console.error(`Error: Project "${targetApp}" not found in patches directory.`);
