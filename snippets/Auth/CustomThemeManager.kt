@@ -21,12 +21,8 @@ object CustomThemeManager {
     fun init(context: Context) {
         if (isInitialized) return
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val storedBg = prefs.getString("bg_mode", "Default") ?: "Default"
-        backgroundMode = if (storedBg == "Proton Default") "Default" else storedBg
-        
-        val storedAccent = prefs.getString("accent_mode", "Default") ?: "Default"
-        accentColorMode = if (storedAccent == "Proton Default") "Default" else storedAccent
-        
+        backgroundMode = prefs.getString("bg_mode", "Default") ?: "Default"
+        accentColorMode = prefs.getString("accent_mode", "Default") ?: "Default"
         isInitialized = true
     }
 
@@ -56,8 +52,8 @@ object CustomThemeManager {
         else -> null
     }
 
-    fun getDarkBgColor(): Color? = when (backgroundMode) {
-        "AMOLED" -> Color.Black
+    fun getBackgroundColor(isDark: Boolean): Color? = when (backgroundMode) {
+        "Black & White" -> if (isDark) Color.Black else Color.White
         "System (Material You)" -> systemBackground
         else -> null
     }

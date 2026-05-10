@@ -1,11 +1,11 @@
 {
     "options": {
-        "background": "amoled",
+        "background": "dark",
         "accent": "aesthetic_purple",
         "fonts": "system"
     },
     "presets": {
-        "amoled": {
+        "dark": {
             "background": "#000000",
             "surface": "#000000"
         },

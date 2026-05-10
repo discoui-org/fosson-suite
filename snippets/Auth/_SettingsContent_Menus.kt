@@ -9,7 +9,7 @@
                 {
                     val context = LocalContext.current
                     val bgOptions = remember(CustomThemeManager.backgroundMode) {
-                        listOf("Default", "AMOLED", "System (Material You)").map { label ->
+                        listOf("Default", "Black & White", "System (Material You)").map { label ->
                             object : UiSelectorOption<String> {
                                 override val isSelected = (label == CustomThemeManager.backgroundMode)
                                 override val text = UiText.Dynamic(label)
