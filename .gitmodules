@@ -1,18 +1,24 @@
 [submodule "apps/Auth"]
 	path = apps/Auth
 	url = https://github.com/protonpass/android-authenticator.git
+	ignore = all
 [submodule "apps/Calendar"]
 	path = apps/Calendar
 	url = https://github.com/ProtonMail/android-calendar.git
+	ignore = all
 [submodule "apps/Drive"]
 	path = apps/Drive
 	url = https://github.com/ProtonDriveApps/android-drive.git
+	ignore = all
 [submodule "apps/Mail"]
 	path = apps/Mail
 	url = https://github.com/ProtonMail/android-mail.git
+	ignore = all
 [submodule "apps/Pass"]
 	path = apps/Pass
 	url = https://github.com/protonpass/android-pass.git
+	ignore = all
 [submodule "apps/VPN"]
 	path = apps/VPN
 	url = https://github.com/ProtonVPN/android-app.git
+	ignore = all

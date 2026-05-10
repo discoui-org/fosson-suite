@@ -94,7 +94,18 @@ patchFiles.forEach(file => {
             const fullPath = path.join(baseDir, fileDef.path);
             const dir = path.dirname(fullPath);
             if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-            fs.writeFileSync(fullPath, fileDef.content, 'utf8');
+            
+            let content = fileDef.content;
+            if (fileDef.contentFile) {
+                const snippetPath = path.join(__dirname, 'snippets', fileDef.contentFile);
+                if (fs.existsSync(snippetPath)) {
+                    content = fs.readFileSync(snippetPath, 'utf8');
+                } else {
+                    console.warn(`   Snippet file not found: ${fileDef.contentFile}`);
+                }
+            }
+            
+            fs.writeFileSync(fullPath, content, 'utf8');
             console.log(`   Created New File: ${fileDef.path}`);
         });
     }
@@ -181,15 +192,26 @@ patchFiles.forEach(file => {
                     const featureName = rep.name || 'Custom Patch';
                     
                     // Support both single patch and array of patches
-                    const patches = rep.patches || [{ target: rep.target, replacement: rep.replacement }];
+                    const patches = rep.patches || [{ target: rep.target, replacement: rep.replacement, replacementFile: rep.replacementFile }];
                     
                     patches.forEach(p => {
                         let target = p.target;
                         let replacement = p.replacement || '';
                         let skipPatch = false;
 
+                        // Load replacement from file if specified
+                        if (p.replacementFile) {
+                            const snippetPath = path.join(__dirname, 'snippets', p.replacementFile);
+                            if (fs.existsSync(snippetPath)) {
+                                replacement = fs.readFileSync(snippetPath, 'utf8');
+                            } else {
+                                console.warn(`   Snippet file not found: ${p.replacementFile}`);
+                                skipPatch = true;
+                            }
+                        }
+
                         // Resolve dynamic theme variables in replacement
-                        if (replacement.includes('{{theme.')) {
+                        if (!skipPatch && replacement.includes('{{theme.')) {
                             const vars = {
                                 '{{theme.dark.background}}': toComposeColor(resolvedColors.dark.background),
                                 '{{theme.dark.surface}}': toComposeColor(resolvedColors.dark.surface),
