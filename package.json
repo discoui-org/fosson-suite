@@ -24,6 +24,7 @@
     "reset": "for dir in apps/*; do if [ -d \"$dir/.git\" ]; then (cd \"$dir\" && git reset --hard); fi; done; rm -rf snippets/*/icons"
   },
   "dependencies": {
-    "execa": "^9.6.1"
+    "execa": "^9.6.1",
+    "sharp": "^0.34.5"
   }
 }

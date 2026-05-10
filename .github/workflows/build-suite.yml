@@ -75,14 +75,13 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      # PATCH İŞLEMİ EKLENDİ
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
+      - name: Install Dependencies
+        run: npm install
 
-      - name: Apply Custom Names and Packages
-        run: node patch.js
+      - name: Apply Custom Patches and Generate Icons
+        run: npm run patch -- --app ${{ matrix.app }}
+        env:
+          PATCH_LEVEL: ${{ github.run_number }}
 
       - name: Decode Keystore
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > apps/${{ matrix.app }}/app/release.jks
@@ -90,9 +89,11 @@ jobs:
       - name: Build Optimized APK
         working-directory: apps/${{ matrix.app }}
         run: |
+          # Dynamic Versioning via Gradle Properties
           ./gradlew ${{ matrix.task }} \
             -Pandroid.injected.abi=arm64-v8a \
             -Pandroid.enableR8.fullMode=true \
+            -PpatchLevel=${{ github.run_number }} \
             --no-daemon --parallel
         env:
           CI_SERVER_HOST: gitlab.com
@@ -102,8 +103,48 @@ jobs:
           MYAPP_RELEASE_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           MYAPP_RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
-      - name: Upload FOSS APK
+      - name: Upload APK for Repo
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.app }}-foss-arm64
+          name: apks-${{ matrix.app }}
           path: apps/${{ matrix.app }}/**/release/*.apk
+
+  deploy-fdroid:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download all APKs
+        uses: actions/download-artifact@v4
+        with:
+          path: all-apks
+          merge-multiple: true
+
+      - name: Install F-Droid Server
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fdroidserver
+
+      - name: Setup F-Droid Repo
+        run: |
+          mkdir -p fdroid/repo
+          cp all-apks/*.apk fdroid/repo/
+          cd fdroid
+          # Initialize minimal config if not exists
+          if [ ! -f "config.yml" ]; then
+            fdroid init --minimal
+            # Use the same keystore for repo signing if possible, or skip for now
+            # For a real repo, you'd want a fixed keystore here
+          fi
+          fdroid update --create-metadata
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./fdroid/repo
+          publish_branch: gh-pages
+          force_orphan: true
