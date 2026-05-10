@@ -194,26 +194,31 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y python3-pip python3-setuptools libjpeg-dev zlib1g-dev
           pip3 install --user fdroidserver
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      - name: Setup F-Droid Repo
+          echo "$HOME/.local/bin" >> $GITHUB_P      - name: Setup F-Droid Repo
         run: |
-          mkdir -p fdroid/repo
-          cp all-apks/*.apk fdroid/repo/
-          cd fdroid
-          # Initialize config if not exists
+          # 1. Klasör yapısını hazırla
+          mkdir -p deploy/fdroid/repo
+          cp all-apks/*.apk deploy/fdroid/repo/
+          
+          # 2. F-Droid konfigürasyonunu hazırla
+          mkdir -p fdroid-tool
+          cd fdroid-tool
           if [ ! -f "config.yml" ]; then
             fdroid init --no-prompt
-            # Update config.yml with correct URL and metadata
-            sed -i "s|repo_url:.*|repo_url: https://discoui-org.github.io/fosson-suite/fdroid/repo|g" config.yml
+            # Repo URL'sini subfolder'a göre ayarla
+            sed -i "s|https://MyFirstDroidRepo.org/fdroid/repo|https://discoui-org.github.io/fosson-suite/fdroid/repo|g" config.yml
             sed -i "s|repo_name:.*|repo_name: Fosson Suite Repository|g" config.yml
-            sed -i "s|repo_description:.*|repo_description: Patched Proton applications with zero telemetry and premium UX.|g" config.yml
           fi
-          # Create metadata and update the index
+          
+          # 3. APK'ları araca göster ve update et
+          ln -s ../deploy/fdroid/repo repo
           fdroid update --create-metadata --verbose
-
-          # OVERWRITE with Material 3 Landing Page
-          cat <<EOF > repo/index.html
+          
+          # 4. QR kodu ana dizine kopyala
+          cp repo/index.png ../deploy/index.png
+          
+          # 5. Landing Page'i ANA DİZİN (root) için oluştur
+          cat <<EOF > ../deploy/index.html
           <!DOCTYPE html>
           <html lang="en">
           <head>
@@ -245,18 +250,11 @@ jobs:
                       min-height: 100vh;
                       padding: 24px;
                   }
-                  .container {
-                      max-width: 600px;
-                      width: 100%;
-                      text-align: center;
-                  }
+                  .container { max-width: 600px; width: 100%; text-align: center; }
                   .header { margin-top: 48px; margin-bottom: 32px; }
-                  .logo-container { margin-bottom: 16px; }
                   .logo-container img { width: 96px; height: 96px; border-radius: 24px; }
-                  
-                  h1 { font-weight: 500; font-size: 2.5rem; margin: 0; color: var(--md-sys-color-on-surface); }
-                  p.subtitle { color: var(--md-sys-color-outline); font-size: 1.1rem; margin-top: 8px; }
-                  
+                  h1 { font-weight: 500; font-size: 2.5rem; margin: 0; }
+                  .subtitle { color: var(--md-sys-color-outline); font-size: 1.1rem; margin-top: 8px; }
                   .card {
                       background-color: var(--md-sys-color-primary-container);
                       color: var(--md-sys-color-on-primary-container);
@@ -267,58 +265,23 @@ jobs:
                       flex-direction: column;
                       align-items: center;
                   }
-                  
-                  .qr-outer {
-                      background: white;
-                      padding: 16px;
-                      border-radius: 20px;
-                      margin-bottom: 24px;
-                  }
+                  .qr-outer { background: white; padding: 16px; border-radius: 20px; margin-bottom: 24px; }
                   .qr-outer img { display: block; width: 180px; height: 180px; }
-                  
                   .url-chip {
                       background-color: var(--md-sys-color-surface);
                       color: var(--md-sys-color-primary);
-                      padding: 12px 24px;
-                      border-radius: 100px;
-                      font-family: monospace;
-                      font-size: 0.9rem;
-                      margin: 16px 0;
-                      border: 1px solid var(--md-sys-color-outline);
+                      padding: 12px 24px; border-radius: 100px;
+                      font-family: monospace; font-size: 0.85rem;
+                      margin: 16px 0; border: 1px solid var(--md-sys-color-outline);
                       cursor: pointer;
-                      transition: transform 0.2s;
                   }
-                  .url-chip:active { transform: scale(0.98); }
-                  
-                  .instruction-list {
-                      text-align: left;
-                      width: 100%;
-                      margin-top: 24px;
-                      background-color: rgba(255, 255, 255, 0.4);
-                      border-radius: 20px;
-                      padding: 20px;
-                  }
-                  .step {
-                      display: flex;
-                      align-items: center;
-                      gap: 16px;
-                      margin-bottom: 12px;
-                      font-size: 1rem;
-                  }
+                  .instruction-list { text-align: left; width: 100%; margin-top: 24px; background: rgba(255,255,255,0.4); border-radius: 20px; padding: 20px; }
+                  .step { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
                   .step-icon {
-                      background-color: var(--md-sys-color-primary);
-                      color: var(--md-sys-color-on-primary);
-                      width: 28px;
-                      height: 28px;
-                      border-radius: 14px;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      font-weight: 600;
-                      font-size: 0.8rem;
-                      flex-shrink: 0;
+                      background-color: var(--md-sys-color-primary); color: var(--md-sys-color-on-primary);
+                      width: 28px; height: 28px; border-radius: 14px;
+                      display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8rem;
                   }
-                  
                   footer { margin-top: auto; padding: 48px 0; color: var(--md-sys-color-outline); font-size: 0.85rem; font-style: italic; }
               </style>
           </head>
@@ -326,22 +289,19 @@ jobs:
               <div class="container">
                   <div class="header">
                       <div class="logo-container">
-                          <img src="https://raw.githubusercontent.com/discoui-org/MyProtonSuite/main/assets/icon.svg" alt="Fosson Logo">
+                          <img src="https://raw.githubusercontent.com/discoui-org/fosson-suite/main/assets/icon.svg" alt="Fosson Logo">
                       </div>
                       <h1>Fosson Suite</h1>
                       <p class="subtitle">Premium Privacy Experience</p>
                   </div>
-                  
                   <div class="card">
                       <div class="qr-outer">
                           <img src="index.png" alt="QR Code">
                       </div>
                       <p style="margin: 0; font-weight: 500;">Add to F-Droid</p>
-                      
                       <div class="url-chip" onclick="navigator.clipboard.writeText(this.innerText); alert('URL Copied!')">
                           https://discoui-org.github.io/fosson-suite/fdroid/repo
                       </div>
-                      
                       <div class="instruction-list">
                           <div class="step"><div class="step-icon">1</div> Open F-Droid on your device</div>
                           <div class="step"><div class="step-icon">2</div> Settings &gt; Repositories</div>
@@ -350,9 +310,7 @@ jobs:
                       </div>
                   </div>
               </div>
-              <footer>
-                  "The internet is a scary place. ily Proton." — Hoax Cherry
-              </footer>
+              <footer>"The internet is a scary place. ily Proton." — Hoax Cherry</footer>
           </body>
           </html>
           EOF
@@ -361,6 +319,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./fdroid/repo
+          publish_dir: ./deploy
           publish_branch: gh-pages
-          force_orphan: true
+          force_orphan: truen: true
