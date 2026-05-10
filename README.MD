@@ -62,11 +62,14 @@ Full support for Android 13+ themed icons, ensuring a minimalist and integrated 
 ### GitHub Releases
 The easiest way to get the applications is to download the pre-built APKs from the [Releases](https://github.com/discoui-org/fosson-suite/releases) page. Each release includes both the patched APKs and the corresponding source code.
 
-### F-Droid Repository
-You can add our custom repository to your F-Droid client to receive automatic updates:
-1. Copy the repository URL: `https://discoui-org.github.io/fosson-suite/`
-2. In F-Droid, go to **Settings > Repositories**.
-3. Tap the **+** icon and paste the URL.
+### 📦 F-Droid Repository
+Add our repository to F-Droid for automatic updates:
+
+1.  **Scan QR Code:**
+    ![F-Droid QR Code](https://raw.githubusercontent.com/discoui-org/fosson-suite/main/assets/fdroidrepoqr.svg)
+
+2.  **Manual URL:**
+    `https://discoui-org.github.io/fosson-suite/fdroid/repo`
 
 ---
 

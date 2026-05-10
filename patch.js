@@ -159,6 +159,13 @@ patchFiles.forEach(file => {
                 }
             }
 
+            // --- A2. Update R class imports in source files ---
+            if ((ext === '.kt' || ext === '.java') && content.includes(oldPkg + '.R')) {
+                content = content.split(oldPkg + '.R').join(newPkg + '.R');
+                changed = true;
+                appliedPatches.add('Source R Imports');
+            }
+
             // --- B. App Title Replacement ---
             if (ext === '.xml' && filePath.includes('strings.xml') && content.includes('name="app_name"')) {
                 const titleRegex = /(<string name="app_name".*?>)(.*?)(<\/string>)/g;

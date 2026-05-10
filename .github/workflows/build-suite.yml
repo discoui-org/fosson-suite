@@ -214,22 +214,27 @@ jobs:
             rm -rf repo
           fi
           
-          # URL ve metadata güncellemelerini HER ZAMAN yapalım (if dışında)
-          # 'repo_url:' ile başlayan her şeyi yakala
+          # URL ve metadata güncellemelerini TAM teşekküllü yapalım
           sed -i 's|repo_url:.*|repo_url: https://discoui-org.github.io/fosson-suite/fdroid/repo|g' config.yml
-          sed -i 's|repo_name:.*|repo_name: Fosson Suite Repository|g' config.yml
+          sed -i 's|repo_name:.*|repo_name: Fosson Suite|g' config.yml
+          sed -i 's|repo_icon:.*|repo_icon: icon.png|g' config.yml
+          sed -i 's|repo_description:.*|repo_description: Official F-Droid repository for Fosson Suite. A collection of de-telemetrized and Material 3 branded applications.|g' config.yml
           
-          # Kontrol için config dosyasını loglara yazalım (gizli bilgi içermez)
+          # Repo ikonunu hazırla (SVG'den PNG'ye çevir)
+          node -e "require('sharp')('../assets/icon.svg').resize(512, 512).toFile('icon.png').then(() => console.log('Icon converted to PNG')).catch(err => console.error(err))"
+          
+          # Kontrol için
+          ls -lh icon.png || echo "Icon conversion failed"
           echo "--- DEBUG: config.yml content ---"
-          grep "repo_url" config.yml
+          grep -E "repo_url|repo_name|repo_icon|repo_description" config.yml
           echo "---------------------------------"
           
           # 3. APK'ları araca göster ve update et (artık linkleme başarılı olacak)
           ln -sf ../deploy/fdroid/repo repo
           fdroid update --create-metadata --verbose
           
-          # 4. QR kodu ana dizine kopyala
-          cp repo/index.png ../deploy/index.png
+          # 4. MANUEL QR kodu ana dizine kopyala (Otomatik üretilen hatalı olduğu için)
+          cp ../assets/fdroidrepoqr.svg ../deploy/index.svg
           
           # 5. Landing Page'i ANA DİZİN (root) için oluştur
           cat <<EOF > ../deploy/index.html
@@ -280,7 +285,7 @@ jobs:
                       align-items: center;
                   }
                   .qr-outer { background: white; padding: 16px; border-radius: 20px; margin-bottom: 24px; }
-                  .qr-outer img { display: block; width: 180px; height: 180px; }
+                  .qr-outer img { display: block; width: 220px; height: 220px; }
                   .url-chip {
                       background-color: var(--md-sys-color-surface);
                       color: var(--md-sys-color-primary);
@@ -310,7 +315,7 @@ jobs:
                   </div>
                   <div class="card">
                       <div class="qr-outer">
-                          <img src="index.png" alt="QR Code">
+                          <img src="index.svg" alt="QR Code">
                       </div>
                       <p style="margin: 0; font-weight: 500;">Add to F-Droid</p>
                       <div class="url-chip" onclick="navigator.clipboard.writeText(this.innerText); alert('URL Copied!')">
