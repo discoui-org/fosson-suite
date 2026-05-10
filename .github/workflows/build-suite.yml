@@ -150,9 +150,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: r${{ github.run_number }}
-          name: "Fasson Suite Release #${{ github.run_number }}"
+          name: "Fosson Suite Release #${{ github.run_number }}"
           body: |
-            ## Proton Suite Patched Build
+            ## Fosson Suite Build
             Bu sürüm otomatik olarak yamalanmış ve derlenmiştir.
             - Build Number: ${{ github.run_number }}
             - Apps Included: Auth, Pass, VPN, Drive, Mail, Calendar
