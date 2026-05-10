@@ -116,7 +116,7 @@ async function generate() {
         fs.writeFileSync(path.join(mipmapDir, 'fosson_ic_launcher.xml'), adaptiveXml);
         fs.writeFileSync(path.join(mipmapDir, 'fosson_ic_launcher_round.xml'), adaptiveXml);
 
-        console.log(`[+] Generated Icons for ${appName} (Scale: ${scaleMultiplier})`);
+        console.log(`Generated Icons for ${appName} (Scale: ${scaleMultiplier})`);
     }
 }
 
