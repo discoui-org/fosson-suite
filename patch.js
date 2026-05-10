@@ -133,7 +133,7 @@ patchFiles.forEach(file => {
 
     walkSync(baseDir, (filePath) => {
         const ext = path.extname(filePath);
-        if (['.kts', '.xml', '.kt', '.gradle', '.java', '.proto', '.properties'].includes(ext)) {
+        if (['.kts', '.xml', '.kt', '.gradle', '.java', '.proto', '.properties', '.pro'].includes(ext)) {
             let content = fs.readFileSync(filePath, 'utf8');
             let changed = false;
 
