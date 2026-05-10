@@ -207,12 +207,14 @@ jobs:
           cd fdroid-tool
           if [ ! -f "config.yml" ]; then
             fdroid init --no-prompt
-            # Repo URL'sini subfolder'a göre ayarla
-            sed -i "s|https://MyFirstDroidRepo.org/fdroid/repo|https://discoui-org.github.io/fosson-suite/fdroid/repo|g" config.yml
-            sed -i "s|repo_name:.*|repo_name: Fosson Suite Repository|g" config.yml
+            # ÖNEMLİ: init ile oluşan boş repo klasörünü sil ki linkleme yapabilelim
+            rm -rf repo
+            # Repo URL'sini kesin olarak ayarla (içinde ne yazarsa yazsın ezer)
+            sed -i "s|^repo_url:.*|repo_url: https://discoui-org.github.io/fosson-suite/fdroid/repo|g" config.yml
+            sed -i "s|^repo_name:.*|repo_name: Fosson Suite Repository|g" config.yml
           fi
           
-          # 3. APK'ları araca göster ve update et
+          # 3. APK'ları araca göster ve update et (artık linkleme başarılı olacak)
           ln -s ../deploy/fdroid/repo repo
           fdroid update --create-metadata --verbose
           
