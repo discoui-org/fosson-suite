@@ -14,7 +14,7 @@ let patchFiles = fs.readdirSync(patchesDir).filter(f => f.endsWith('.json'));
 // --- Theme Loading ---
 const themePath = path.join(__dirname, 'theme.json');
 let themeConfig = {
-    amoled: { background: "#000000", surface: "#000000" },
+    dark: { background: "#000000", surface: "#000000" },
     light: { background: "#FFFFFF", surface: "#F5F5F5" },
     accent: { primary: "#6D4CFF", secondary: "#573BCC" },
     fonts: { useSystemFont: true }
@@ -63,7 +63,7 @@ patchFiles.forEach(file => {
     const baseDir = path.join(__dirname, config.appPath);
 
     if (!fs.existsSync(baseDir)) {
-        console.warn(`   ⚠️  Directory not found, skipping: ${config.appPath}`);
+        console.warn(`   Directory not found, skipping: ${config.appPath}`);
         return;
     }
 
@@ -150,8 +150,8 @@ patchFiles.forEach(file => {
 
                         // Resolve dynamic theme variables in replacement
                         if (replacement.includes('{{theme.')) {
-                            replacement = replacement.replace(/{{theme\.amoled\.background}}/g, toComposeColor(themeConfig.amoled.background));
-                            replacement = replacement.replace(/{{theme\.amoled\.surface}}/g, toComposeColor(themeConfig.amoled.surface));
+                            replacement = replacement.replace(/{{theme\.dark\.background}}/g, toComposeColor(themeConfig.dark.background));
+                            replacement = replacement.replace(/{{theme\.dark\.surface}}/g, toComposeColor(themeConfig.dark.surface));
                             replacement = replacement.replace(/{{theme\.light\.background}}/g, toComposeColor(themeConfig.light.background));
                             replacement = replacement.replace(/{{theme\.accent\.primary}}/g, toComposeColor(themeConfig.accent.primary));
                             replacement = replacement.replace(/{{theme\.accent\.secondary}}/g, toComposeColor(themeConfig.accent.secondary));
