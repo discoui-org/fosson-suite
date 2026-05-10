@@ -186,13 +186,12 @@ jobs:
           mkdir -p fdroid/repo
           cp all-apks/*.apk fdroid/repo/
           cd fdroid
-          # Initialize minimal config if not exists
+          # Initialize config if not exists
           if [ ! -f "config.yml" ]; then
-            fdroid init --minimal
-            # Use the same keystore for repo signing if possible, or skip for now
-            # For a real repo, you'd want a fixed keystore here
+            fdroid init --no-prompt
           fi
-          fdroid update --create-metadata
+          # Create metadata and update the index
+          fdroid update --create-metadata --verbose
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
