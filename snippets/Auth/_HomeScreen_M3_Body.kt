@@ -1,5 +1,4 @@
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    var isSearchActive by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier
@@ -7,32 +6,36 @@
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            LargeTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(id = uiR.string.authenticator_proton_authenticator)
-                    )
-                },
-                actions = {
-                    IconButton(onClick = { isSearchActive = !isSearchActive }) {
-                        Icon(
-                            painter = painterResource(id = uiR.drawable.ic_magnifier),
-                            contentDescription = null
+            androidx.compose.foundation.layout.Column {
+                LargeTopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(id = uiR.string.authenticator_proton_authenticator)
                         )
-                    }
-                    IconButton(onClick = onSettingsClick) {
-                        Icon(
-                            painter = painterResource(id = uiR.drawable.ic_settings_alt),
-                            contentDescription = null
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
-                ),
-                scrollBehavior = scrollBehavior
-            )
+                    },
+                    actions = {
+                        IconButton(onClick = onSettingsClick) {
+                            Icon(
+                                painter = painterResource(id = uiR.drawable.ic_settings_alt),
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.largeTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        scrolledContainerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
+                    ),
+                    scrollBehavior = scrollBehavior
+                )
+                SearchTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 8.dp),
+                    value = state.searchQuery,
+                    onValueChange = ::onUpdateEntrySearchQuery
+                )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
