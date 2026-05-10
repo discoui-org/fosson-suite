@@ -27,6 +27,18 @@ on:
         description: 'Build VPN'
         type: boolean
         default: true
+      push_to_fdroid:
+        description: 'Push to F-Droid'
+        type: boolean
+        default: true
+      push_to_releases:
+        description: 'Push to GitHub Releases'
+        type: boolean
+        default: true
+      push_to_workflow_artifacts:
+        description: 'Push to Workflow Artifacts'
+        type: boolean
+        default: true
 
 jobs:
   prepare-matrix:
@@ -111,6 +123,7 @@ jobs:
           zip -r "patched-source-${{ matrix.app }}.zip" "apps/${{ matrix.app }}" -x "**/build/*" "**/.gradle/*" "**/.git/*"
 
       - name: Upload APK and Source
+        if: ${{ inputs.push_to_workflow_artifacts || inputs.push_to_releases || inputs.push_to_fdroid }}
         uses: actions/upload-artifact@v4
         with:
           name: artifacts-${{ matrix.app }}
@@ -120,6 +133,7 @@ jobs:
 
   deploy-release:
     needs: build
+    if: ${{ inputs.push_to_releases }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -149,6 +163,7 @@ jobs:
 
   deploy-fdroid:
     needs: deploy-release
+    if: ${{ always() && (inputs.push_to_fdroid) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
