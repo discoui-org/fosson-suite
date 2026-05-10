@@ -22,9 +22,14 @@ Thumbs.db
 EOF
 
 # Node Modules
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 node_modules/
 =======
 node_modules/
 apps/*-build-cache/apps/protonauthenticator-build-cache/
 >>>>>>> Stashed changes
+=======
+node_modules/
+apps/*-build-cache/
+>>>>>>> a918cc0 (chore: ignore build caches and disable telemetry and logging in Auth patches)
